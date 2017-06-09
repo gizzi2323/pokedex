@@ -9,8 +9,8 @@
   <meta name="author" content="Gena Gizzi">
   <link rel="shortcut icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
   <link rel="icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
-  <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
-  <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+  <link rel="stylesheet" type="text/css" media="all" href="styles.css">
+  <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 </head>
 
 
@@ -34,7 +34,7 @@
 $(function(){
   $('#pokesubmitbtn').on('click', function(e){
     e.preventDefault();
-    $('#pokedata').html('<div id="loader"><br><br><img src="css/loader.gif" alt="loading..."></div>');
+    $('#pokedata').html('<div id="loader"><br><br><img src="loader.gif" alt="loading..."></div>');
     
     var pokemon = $('#pokename').val().toLowerCase();
     var requri   = 'http://pokeapi.co/api/v2/pokemon/'+pokemon;
