@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Pokemon!!!! API!!!</title>
+  <meta name="author" content="Gena Gizzi">
+  <link rel="shortcut icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
+  <link rel="icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
+  <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
+  <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+</head>
+
+
+
+<body>
+
+<center>
+  <div id="w">
+    <h1><b>Pokedex</b></h1>
+    <p>Enter pokemon name or number:</p>
+    
+    <input type="text" name="pokename" id="pokename" placeholder="Pokemon...">
+    
+    <a href="#" id="pokesubmitbtn">Search</a>
+    <br>
+    
+    <div id="pokedata" class="clearfix"></div>
+  </div>
+
+  <script type="text/javascript">
+$(function(){
+  $('#pokesubmitbtn').on('click', function(e){
+    e.preventDefault();
+    $('#pokedata').html('<div id="loader"><br><br><img src="css/loader.gif" alt="loading..."></div>');
+    
+    var pokemon = $('#pokename').val().toLowerCase();
+    var requri   = 'http://pokeapi.co/api/v2/pokemon/'+pokemon;
+
+
+
+
+    requestJSON(requri, function(json) {
+    	console.log(json);
+      if(json.detail == 'Not found.' || pokemon == '') {
+        $('#pokedata').html("<h2>No Pokemon Found</h2>");
+      }
+
+
+       else {
+        // else we have a pokemon and we display info
+        var id = json.id;
+        var name   = json.name;
+        var weight   = json.weight;
+        var height = json.height;
+        var type1 = json.types[0].type.name;
+        if(json.types.length == 2)
+        {
+        	var type2 = json.types[1].type.name;
+        }
+        else var type2 = null;
+        var imageURI = json.sprites.front_default;
+
+
+        // concatenate new URL for next GET request
+        var descriptionURI = 'http://pokeapi.co/api/v2/pokemon-species/'+id;
+
+        // this var will hold the description string
+        
+
+	// GET request to new URL
+			var pokeDescription;
+			$.getJSON(descriptionURI, function(json){
+				data2 = json;
+				outputPageContent();   
+
+        });        
+
+         
+
+       
+
+      
+
+      
+       
+       function outputPageContent() {
+       	var description = data2.flavor_text_entries[1].flavor_text;
+  		var outhtml = '<h2><b>#'+id+' ' + name.charAt(0).toUpperCase() + name.slice(1) + '</b></h2>';
+  		outhtml += '<img src="' + imageURI + '"></div>';
+  		outhtml += '<br><p><b>Type 1:</b> '+type1.charAt(0).toUpperCase() + type1.slice(1)+ ' |    ';
+
+  		if (type2 != null)
+  		{
+  			outhtml += '<b>Type 2:</b> ' + type2.charAt(0).toUpperCase() + type2.slice(1) + ' |    ';
+  		}
+
+  		outhtml += '<b>Height:</b> '+height / 10 + ' m |     ';
+  		outhtml += '<b>Weight:</b> '+weight+ ' kg     ';
+  		outhtml += '<p>'+description+ '</p>';
+  	
+          $('#pokedata').html(outhtml);
+        } // end outputPageContent()
+      } // end else statement
+    }); // end requestJSON Ajax call
+  }); // end click event handler
+  
+  function requestJSON(url, callback) {
+    $.ajax({
+      url: url,
+      complete: function(xhr) {
+        callback.call(null, xhr.responseJSON);
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
