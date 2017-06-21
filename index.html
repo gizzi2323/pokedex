@@ -1,121 +1,66 @@
-<!doctype html>
-<html lang="en-US">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>Pokemon!!!! API!!!</title>
-  <meta name="author" content="Gena Gizzi">
-  <link rel="shortcut icon" href="https://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
-  <link rel="icon" href="https://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
-  <link rel="stylesheet" type="text/css" media="all" href="styles.css">
   <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+    <title></title>
 </head>
-
-
-
 <body>
 
-<center>
-  <div id="w">
-    <h1><b>Pokedex</b></h1>
-    <p>Enter pokemon name or number:</p>
-    
-    <input type="text" name="pokename" id="pokename" placeholder="Pokemon...">
-    
-    <a href="#" id="pokesubmitbtn">Search</a>
-    <br>
-    
-    <div id="pokedata" class="clearfix"></div>
-  </div>
+<script>
+function pokeSubmit(){
+    var param = document.getElementById("pokeInput").value;
+    var pokeURL = "http://pokeapi.co/api/v2/pokemon/" + param;
 
-  <script type="text/javascript">
-$(function(){
-  $('#pokesubmitbtn').on('click', function(e){
-    e.preventDefault();
-    $('#pokedata').html('<div id="loader"><br><br><img src="loader.gif" alt="loading..."></div>');
-    
-    var pokemon = $('#pokename').val().toLowerCase();
-    var requri   = 'https://pokeapi.co/api/v2/pokemon/'+pokemon;
+    $.getJSON(pokeURL, function(data){
+        //console.log(data);
+        //console.log(JSON.stringify(data, null, "  "));
 
+        var pokeID = data.id;
+        var pokeName = data.name;
+        var weight   = data.weight;
+        var height = data.height;
+        var imageURI = data.sprites.front_default;
 
-
-
-    requestJSON(requri, function(json) {
-    	console.log(json);
-      if(json.detail == 'Not found.' || pokemon == '') {
-        $('#pokedata').html("<h2>No Pokemon Found</h2>");
-      }
-
-
-       else {
-        // else we have a pokemon and we display info
-        var id = json.id;
-        var name   = json.name;
-        var weight   = json.weight;
-        var height = json.height;
-        var type1 = json.types[0].type.name;
-        if(json.types.length == 2)
+        var type1 = data.types[0].type.name;
+        if(data.types.length == 2)
         {
-        	var type2 = json.types[1].type.name;
+            var type2 = data.types[1].type.name;
         }
         else var type2 = null;
-        var imageURI = json.sprites.front_default;
 
+        console.log("Number: ", pokeID);
+        console.log("Name: ", pokeName);
+        console.log("Type 1: ", type1);
+        console.log("Type 2: ", type2);
+        console.log("Height: ", height);
+        console.log("Weight: ", weight);
 
-        // concatenate new URL for next GET request
-        var descriptionURI = 'https://pokeapi.co/api/v2/pokemon-species/'+id;
-
-        // this var will hold the description string
-        
-
-	// GET request to new URL
-			var pokeDescription;
-			$.getJSON(descriptionURI, function(json){
-				data2 = json;
-				outputPageContent();   
-
-        });        
-
-         
-
-       
-
-      
-
-      
-       
-       function outputPageContent() {
-       	var description = data2.flavor_text_entries[1].flavor_text;
-  		var outhtml = '<h2><b>#'+id+' ' + name.charAt(0).toUpperCase() + name.slice(1) + '</b></h2>';
-  		outhtml += '<img src="' + imageURI + '"></div>';
-  		outhtml += '<br><p><b>Type 1:</b> '+type1.charAt(0).toUpperCase() + type1.slice(1)+ ' |    ';
-
-  		if (type2 != null)
-  		{
-  			outhtml += '<b>Type 2:</b> ' + type2.charAt(0).toUpperCase() + type2.slice(1) + ' |    ';
-  		}
-
-  		outhtml += '<b>Height:</b> '+height / 10 + ' m |     ';
-  		outhtml += '<b>Weight:</b> '+weight+ ' kg     ';
-  		outhtml += '<p>'+description+ '</p>';
-  	
-          $('#pokedata').html(outhtml);
-        } // end outputPageContent()
-      } // end else statement
-    }); // end requestJSON Ajax call
-  }); // end click event handler
-  
-  function requestJSON(url, callback) {
-    $.ajax({
-      url: url,
-      complete: function(xhr) {
-        callback.call(null, xhr.responseJSON);
-      }
     });
-  }
-});
+}
 </script>
+
+<!-- app search page-->
+<div data-role="page" id="pokeSearch-page">
+    <div data-role="header" data-theme="b">
+         <h1>Pokeapi Demos</h1>
+    </div>
+    <div data-role="main" class="ui-content">
+    <form id="pokeForm" action="#pokeDetails-page" method="post">
+        <div>
+        <label for="pokeInput">Pokemon name or number:
+        <input type="text" name="pokeInput" id="pokeInput" placeholder="Name/Number" value="">
+        </div>
+        <br>
+        <div>
+        <a class="ui-btn" onclick="pokeSubmit();">Search
+        </div>
+    </form>
+    <div>
+    <ul data-role="listview" data-inset="true" id="pokeDetails">
+    </ul>
+    </div>
+    </div>
+</div>
+
 </body>
 </html>
